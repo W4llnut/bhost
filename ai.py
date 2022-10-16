@@ -1,4 +1,5 @@
 from cryptography.fernet import Fernet
+import os
 
 class AI:
 	def __init__(self):

@@ -93,5 +93,5 @@ class AlgorithmETH:
 		# roc
 		rocM = ROCIndicator(self.df['Close'])
 		self.df['rocM'] = rocM.roc()
-		rocBreve = ROCIndicator(self.df['Close'],2)
+		rocBreve = ROCIndicator(self.df['Close'],3)
 		self.df['rocBreve'] = rocBreve.roc()

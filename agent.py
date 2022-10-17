@@ -140,7 +140,7 @@ class AGENT:
 
 	# ========================= funzioni di richiesta ========================= #	
 	def get_price(self):
-		return float(requests.get(f'https://api.binance.com/api/v3/ticker/price?symbol={self.currentName[0]}BUSD').json()["price"])
+		return float(requests.get(f'https://api.binance.com/api/v3/ticker/price?symbol={self.currentName[0]}EUR').json()["price"])
 
 	def get_balance(self):
 		params = {

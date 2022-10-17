@@ -74,7 +74,7 @@ class AGENT:
 					break
 				k += 1
 
-			if costo!=0:
+			if costo!=0 or True:
 				self.dentro = True
 			self.get_balance()
 			return [True,f"Bought: {self.get_price()}"]

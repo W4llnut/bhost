@@ -77,7 +77,7 @@ class AGENT:
 			if costo!=0:
 				self.dentro = True
 			self.get_balance()
-			return [True,f"Bought: {get_price()}"]
+			return [True,f"Bought: {self.get_price()}"]
 			return [True,f"Buy: Crypto:{self.stocks} {self.currentName[self.current]}({costo}*{self.moltiplicatore}={costo*self.moltiplicatore}$) / Balance:{self.money}$ || {output}"]
 
 		elif forced:
@@ -123,7 +123,7 @@ class AGENT:
 
 			m = self.current
 			self.current = -1
-			return [True,f"Sold: {get_price()}"]
+			return [True,f"Sold: {self.get_price()}"]
 			return [True,f"Sell: Crypto:{self.stocks} {self.currentName[m]} / Balance:{round(self.money,2)}$ || {output}"]
 		return [False,""]
 

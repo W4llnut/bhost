@@ -88,7 +88,7 @@ def std(v):
 	return pow( sum([(i-medio)**2 for i in v])/(len(v)-1) ,0.5)
 
 def getBook():
-	book = "https://api.binance.com/api/v3/depth?symbol=ETHBUSD&limit=15"
+	book = "https://api.binance.com/api/v3/depth?symbol=ETHEUR&limit=15"
 	return get(book).json()
 
 def printBookStatistics():

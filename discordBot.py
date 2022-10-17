@@ -136,8 +136,8 @@ async def on_ready():
 		if SESSION==True:
 			try:
 				await asyncio.sleep(15)
-				if check_book_time():
-					await client.get_channel(bookCH).send(printBookStatistics())
+				#if check_book_time():
+				#	await client.get_channel(bookCH).send(printBookStatistics())
 				if check_time():
 					now = datetime.fromtimestamp(time()).strftime("%H:%M")
 					await client.get_channel(attivitaCH).send(f"Connection check({now}).")

@@ -41,7 +41,7 @@ class AlgorithmETH:
 		SrocMACD =  self.df['rocM'].iloc[t]<0.2
 		SsarM = self.df['psar_di'].iloc[t]==True
 
-		if self.ai.eval([self.df['rocM'].iloc[t],self.df['rocBreve'].iloc[t],self.df['adx'].iloc[t],self.df['aroon_indicator'].iloc[t]]):
+		if self.ai.eval([self.df['rocM'].iloc[t],self.df['rocBreve'].iloc[t],self.df['adx'].iloc[t],self.df['aroon_indicator'].iloc[t],self.df['rsi'].iloc[t],self.df['rocLungo'].iloc[t],self.df['macd_diff'].iloc[t],self.df['awesome_osc'].iloc[t],self.df['stoch_rsi'].iloc[t]]):
 			self.strategia = "MACD"
 		elif Smacd and SrocMACD and False:
 			if SsarM:
@@ -95,3 +95,13 @@ class AlgorithmETH:
 		self.df['rocM'] = rocM.roc()
 		rocBreve = ROCIndicator(self.df['Close'],3)
 		self.df['rocBreve'] = rocBreve.roc()
+		
+		# RSI
+		rsiI = RSIIndicator(self.df['Close'])
+		self.df['rsi'] = rsiI.rsi()
+		
+		##
+		a_osc = AwesomeOscillatorIndicator(self.df['High'],self.df['Low'])
+		stoch_rsi = StochRSIIndicator(self.df['Close'])
+		self.df['awesome_osc'] = a_osc.awesome_oscillator()
+		self.df['stoch_rsi'] = stoch_rsi.stochrsi()

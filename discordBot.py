@@ -74,7 +74,7 @@ def get_data(asset):
 		ohlc = concat([ohlc, data0]).drop_duplicates(keep='first')
 		ohlc = ohlc.sort_index()
 	"""
-	data0 = download("ETH-USD", start=datetime.now()-timedelta(hours=40), end=datetime.now(), interval="5m", auto_adjust=False, prepost=False).astype(float).sort_index()
+	data0 = download("ETH-EUR", start=datetime.now()-timedelta(hours=40), end=datetime.now(), interval="5m", auto_adjust=False, prepost=False).astype(float).sort_index()
 
 	return [data0]
 

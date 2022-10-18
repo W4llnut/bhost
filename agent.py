@@ -162,7 +162,7 @@ class AGENT:
 
 	def get_trade_history(self, ora):
 		params = {
-			'symbol': 'ETHBUSD',
+			'symbol': 'ETHEUR',
 			'recvWindow': 60000
 		}
 		v = self.client.my_trades(**params)

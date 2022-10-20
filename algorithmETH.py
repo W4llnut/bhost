@@ -41,7 +41,7 @@ class AlgorithmETH:
 		SrocMACD =  self.df['rocM'].iloc[t]<0.2
 		SsarM = self.df['psar_di'].iloc[t]==True
 
-		if self.ai.eval([self.df['rocM'].iloc[t],self.df['rocBreve'].iloc[t],self.df['adx'].iloc[t],self.df['aroon_indicator'].iloc[t],self.df['rsi'].iloc[t],self.df['rocLungo'].iloc[t],self.df['macd_diff'].iloc[t],self.df['awesome_osc'].iloc[t],self.df['stoch_rsi'].iloc[t]]):
+		if self.ai.eval([self.df['bollinger_wband'].iloc[t],self.df['rocM'].iloc[t],self.df['rocBreve'].iloc[t],self.df['adx'].iloc[t],self.df['aroon_indicator'].iloc[t],self.df['rsi'].iloc[t],self.df['rocLungo'].iloc[t],self.df['macd_diff'].iloc[t],self.df['awesome_osc'].iloc[t],self.df['stoch_rsi'].iloc[t],self.df['bollinger_pband'].iloc[t],self.df['roc5'].iloc[t]]):
 			self.strategia = "MACD"
 		elif Smacd and SrocMACD and False:
 			if SsarM:
@@ -83,6 +83,12 @@ class AlgorithmETH:
 		# Aroon
 		aroon = AroonIndicator(self.df['Close'])
 		self.df['aroon_indicator'] = aroon.aroon_indicator()
+		
+		
+		# Bollinger Bands
+		bollinger = BollingerBands(self.df['Close'],200)
+		self.df['bollinger_wband'] = bollinger.bollinger_wband()
+		self.df['bollinger_pband'] = bollinger.bollinger_pband()
 
 		# ADX
 		adxI = ADXIndicator(self.df['High'],self.df['Low'],self.df['Close'], self.ADXperiodo, False)
@@ -95,6 +101,11 @@ class AlgorithmETH:
 		self.df['rocM'] = rocM.roc()
 		rocBreve = ROCIndicator(self.df['Close'],3)
 		self.df['rocBreve'] = rocBreve.roc()
+		rocBreve = ROCIndicator(self.df['Close'],5)
+		self.df['roc5'] = rocBreve.roc()
+		rocLungo = ROCIndicator(self.df['Close'],95)
+		self.df['rocLungo'] = rocLungo.roc()
+
 		
 		# RSI
 		rsiI = RSIIndicator(self.df['Close'])

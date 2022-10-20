@@ -74,6 +74,9 @@ class AlgorithmETH:
 		# EMA
 		self.df[f'EMA{self.periodiB}'] = ema_indicator(self.df['Close'], self.periodiB, False)
 		self.df[f'EMA{self.periodiL}'] = ema_indicator(self.df['Close'], self.periodiL, False)
+		
+		macd = MACD(self.df['Close'])
+		self.df['macd_diff'] = macd.macd_diff()
 
 		# Parabolic SAR
 		parabolicSar = PSARIndicator(self.df['High'],self.df['Low'],self.df['Close'])

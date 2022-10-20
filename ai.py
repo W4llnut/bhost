@@ -7,15 +7,15 @@ class AI:
 		key = os.environ['FERNET']
 		fernet = Fernet(key)
 		lines = fernet.decrypt(f.read()).decode("utf-8").split("\r\n")
-		self.bubbles = [[],[],[],[],[],[],[],[],[]]
+		self.bubbles = [[],[],[],[],[],[],[],[],[],[],[],[]]
 		line = 0
-		for j in range(9):
+		for j in range(12):
 			for i in range(int(lines[line])):
 				self.bubbles[j].append([float(i) for i in lines[line+1+i].split(" ")])
 			line += int(lines[line])+1
 
 	def eval(self, state):
-		for i in range(9):
+		for i in range(12):
 			flag = 0
 			for j in range(len(self.bubbles[i])):
 				if abs(state[i]-self.bubbles[i][j][0])<=self.bubbles[i][j][1]:

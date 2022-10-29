@@ -6,7 +6,7 @@ from cryptography.fernet import Fernet
 import pandas as pd
 
 f = open("ai.md","rb")
-w = open("ai.py","rb")
+w = open("ai.py","wb")
 key = os.environ['FERNET']
 fernet = Fernet(key)
 text = fernet.decrypt(f.read()).decode("utf-8")

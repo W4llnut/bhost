@@ -43,7 +43,7 @@ def check_time():
 			Last_update = datetime.fromtimestamp(time()).strftime("%H:%M:%S")
 			return True
 	if soglia[1]<=30:
-		if now[1]>=30 and now[2]>=30:
+		if now[1]>=31 and now[2]>=10:
 			Last_update = datetime.fromtimestamp(time()).strftime("%H:%M:%S")
 			return True
 	return False

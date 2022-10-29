@@ -4,6 +4,7 @@ from ta.momentum import *
 from ta.volatility import *
 from cryptography.fernet import Fernet
 import pandas as pd
+import os
 
 f = open("ai.md","rb")
 w = open("ai.py","wb")

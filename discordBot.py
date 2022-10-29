@@ -38,16 +38,14 @@ def check_time():
 	soglia = Last_update.split(":")
 	now = [int(i) for i in now]
 	soglia = [int(i) for i in soglia]
-	if soglia[1] >= 55:
-		soglia[1] = -5
-		soglia[0] = (soglia[0]+1)%24
-	else:
-		soglia[1] = floor(soglia[1]/5)*5
-
-	if now[0] >= soglia[0] and now[1] >= soglia[1]+5 and now[2]>20:
-		Last_update = datetime.fromtimestamp(time()).strftime("%H:%M:%S")
-		return True
-
+	if soglia[1]>=30:
+		if now[1]<10:
+			Last_update = datetime.fromtimestamp(time()).strftime("%H:%M:%S")
+			return True
+	if soglia[1]<=30:
+		if now[1]>=30 and now[2]>=30:
+			Last_update = datetime.fromtimestamp(time()).strftime("%H:%M:%S")
+			return True
 	return False
 
 def check_book_time():

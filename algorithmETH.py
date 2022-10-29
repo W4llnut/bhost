@@ -49,26 +49,16 @@ class AlgorithmETH:
 
 	# ========================= funzioni dell'algoritmo ========================= #
 	def check_buy(self, t):
-		Smacd = self.df[f'EMA{self.Breve}'].iloc[t]<self.df[f'EMA{self.Lunga}'].iloc[t]
-		SrocMACD =  self.df['rocM'].iloc[t]<0.2
-		SsarM = self.df['psar_di'].iloc[t]==True
 		state,calls = self.ai.eval(self.df,t)
 		if state:
 			self.stopWinMACD = calls[0]
 			self.stopLossMACD = calls[1]
 			self.strategia = "MACD"
-		elif Smacd and SrocMACD and False:
-			if SsarM:
-				self.short = True
-				self.strategia = "MACDshort"
 		return self.strategia != "-"
 
 	def check_sell(self, t, entrata):
 		if self.strategia == "MACD":
 			if self.ai.stopCall(self.df,t,entrata*(1+self.tassa)) or self.stopCallMacd(t,entrata):
-				self.strategia = "-"
-		elif self.strategia == "MACDshort":
-			if self.df[f'EMA{self.Breve}'].iloc[t]>self.df[f'EMA{self.Lunga}'].iloc[t] or self.stopCallMacdshort(t,entrata):
 				self.strategia = "-"
 		return self.strategia == "-"
 

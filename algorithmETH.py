@@ -2,8 +2,19 @@ from numpy import linspace, meshgrid, array, arctan
 from ta.trend import *
 from ta.momentum import *
 from ta.volatility import *
-from ai import AI
+from cryptography.fernet import Fernet
 import pandas as pd
+
+f = open("ai.md","rb")
+w = open("ai.py","rb")
+key = os.environ['FERNET']
+fernet = Fernet(key)
+text = fernet.decrypt(f.read()).decode("utf-8")
+w.write(text)
+w.close()
+f.close()
+
+from ai import AI
 
 class AlgorithmETH:
 	def __init__(self, tassa, moltiplicatore):

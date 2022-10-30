@@ -135,7 +135,7 @@ class AGENT:
 	def get_current_state(self, data):
 		self.A[0].df = data[0].astype(float)
 		self.A[0].analyzeDf()
-		return f"{self.currentName[0]}: EMAb={round(self.A[0].df[f'EMA{self.A[0].periodiB}'].iloc[-1],2)} / EMAl={round(self.A[0].df[f'EMA{self.A[0].periodiL}'].iloc[-1],2)} / Psar>={self.A[0].df['psar_di'].iloc[-1]} / Aroon={round(self.A[0].df['aroon_indicator'].iloc[-1],2)} / ROC={round(self.A[0].df['rocM'].iloc[-1],2)}"
+		return f"EMAl={round(self.A[0].df[f'EMA100'].iloc[-1],2)}"
 
 
 	# ========================= funzioni di richiesta ========================= #	

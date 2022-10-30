@@ -39,11 +39,11 @@ def check_time():
 	now = [int(i) for i in now]
 	soglia = [int(i) for i in soglia]
 	if soglia[1]>=30:
-		if now[1]<10:
+		if 2<now[1]<10:
 			Last_update = datetime.fromtimestamp(time()).strftime("%H:%M:%S")
 			return True
 	if soglia[1]<=30:
-		if now[1]>=31 and now[2]>=10:
+		if now[1]>=32 and now[2]>=10:
 			Last_update = datetime.fromtimestamp(time()).strftime("%H:%M:%S")
 			return True
 	return False

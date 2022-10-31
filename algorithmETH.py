@@ -49,30 +49,39 @@ class AlgorithmETH:
 
 	# ========================= funzioni dell'algoritmo ========================= #
 	def check_buy(self, t):
-		state,calls = self.ai.eval(self.df,t)
-		if state:
-			self.stopWinMACD = calls[0]
-			self.stopLossMACD = calls[1]
+		state1,calls1 = self.ai.eval1(self.df,t)
+		state2,calls2 = self.ai.eval2(self.df,t)
+		if state1:
+			self.stopWinMACD = calls1[0]
+			self.stopLossMACD = calls1[1]
 			self.strategia = "MACD"
+		elif state2:
+			self.stopWinMACD = calls2[0]
+			self.stopLossMACD = calls2[1]
+			self.strategia = "bollinger"
 		return self.strategia != "-"
 
 	def check_sell(self, t, entrata):
 		if self.strategia == "MACD":
-			if self.ai.stopCall(self.df,t,entrata*(1+self.tassa)) or self.stopCallMacd(t,entrata):
+			#if self.df[f'EMA{self.Breve}'][t]<self.df[f'EMA{self.Lunga}'][t] or self.stopCallMacd(t,entrata):
+			if self.ai.stopCall1(self.df,t,entrata*(1+self.tassa)) or self.stopCallMacd(t,entrata):
+				self.strategia = "-"
+		elif self.strategia == "bollinger":
+			if self.ai.stopCall2(self.df,t,entrata*(1+self.tassa)) or self.stopCallBollinger(t,entrata):
 				self.strategia = "-"
 		return self.strategia == "-"
 
 	def stopCallMacd(self, t, entrata):
-		#sar = self.moltiplicatore*(self.df['Close'].iloc[t]*(1-self.tassa)-entrata)/entrata>=0 and self.df['psar_di'].iloc[t]==True
-		upper = self.df['Close'].iloc[t]>entrata*(1+self.stopWinMACD)
-		lower = self.df['Close'].iloc[t]<entrata*(1-self.stopLossMACD)
-		return upper or lower or sar
+		#sar = self.moltiplicatore*(self.df['Close'][t]*(1-self.tassa)-entrata)/entrata>=0 and self.df['psar_di'][t]==True
+		upper = self.df['Close'][t]>entrata*(1+self.stopWinMACD)#*(1+self.df['atr_pself.moltiplicatore*(self.df['Close'][t]*(1-self.tassa)-entrata)/entrata>=0 and erc'][t]))
+		lower = self.df['Close'][t]<entrata*(1-self.stopLossMACD)#*(1+self.df['atr_perc'][t]))
+		return upper or lower# or sar
 
-	def stopCallMacdshort(self, t, entrata):
-		sar = self.moltiplicatore*(self.df['Close'].iloc[t]*(1+self.tassa/2)-entrata*(1-self.tassa/2))/entrata<=0 and self.df['psar_di'].iloc[t]==False
-		lower = self.df['Close'].iloc[t]<entrata*(1-self.stopWinMACDs)
-		upper = self.df['Close'].iloc[t]>entrata*(1+self.stopLossMACDs)
-		return upper or lower or sar
+	def stopCallBollinger(self, t, entrata):
+		#sar = self.moltiplicatore*(self.df['Close'][t]*(1+self.tassa/2)-entrata*(1-self.tassa/2))/entrata<=0 and self.df['psar_di'][t]==False
+		upper = self.df['Close'][t]>entrata*(1+self.stopWinMACD)#*(1+self.df['atr_pself.moltiplicatore*(self.df['Close'][t]*(1-self.tassa)-entrata)/entrata>=0 and erc'][t]))
+		lower = self.df['Close'][t]<entrata*(1-self.stopLossMACD)#*(1+self.df['atr_perc'][t]))
+		return upper or lower# or sar
 
 	def analyzeDf(self):
 		# EMA
@@ -81,5 +90,12 @@ class AlgorithmETH:
 		self.df['macd_diff'] = macd.macd_diff()
 
 		# roc
+		rocBreve = ROCIndicator(self.df['Close'])
+		self.df['rocM'] = rocBreve.roc()
 		rocBreve = ROCIndicator(self.df['Close'],5)
 		self.df['roc5'] = rocBreve.roc()
+
+		# Bollinger Bands
+		bollinger = BollingerBands(self.df['Close'],100)
+		self.df['bollinger_wband'] = bollinger.bollinger_wband()
+		self.df['bollinger_pband'] = bollinger.bollinger_pband()

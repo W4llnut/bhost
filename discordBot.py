@@ -38,14 +38,9 @@ def check_time():
 	soglia = Last_update.split(":")
 	now = [int(i) for i in now]
 	soglia = [int(i) for i in soglia]
-	if soglia[1]>=30:
-		if 2<now[1]<10:
-			Last_update = datetime.fromtimestamp(time()).strftime("%H:%M:%S")
-			return True
-	if soglia[1]<=30:
-		if now[1]>=32 and now[2]>=10:
-			Last_update = datetime.fromtimestamp(time()).strftime("%H:%M:%S")
-			return True
+	if 2<now[1]<10:
+		Last_update = datetime.fromtimestamp(time()).strftime("%H:%M:%S")
+		return True
 	return False
 
 def check_book_time():
@@ -72,7 +67,7 @@ def get_data(asset):
 		ohlc = concat([ohlc, data0]).drop_duplicates(keep='first')
 		ohlc = ohlc.sort_index()
 	"""
-	data0 = download("ETH-EUR", start=datetime.now()-timedelta(hours=120), end=datetime.now(), interval="30m", auto_adjust=False, prepost=False).astype(float).sort_index()
+	data0 = download("ETH-EUR", start=datetime.now()-timedelta(hours=500), end=datetime.now(), interval="1h", auto_adjust=False, prepost=False).astype(float).sort_index()
 
 	return [data0]
 

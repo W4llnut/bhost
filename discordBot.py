@@ -38,7 +38,7 @@ def check_time():
 	soglia = Last_update.split(":")
 	now = [int(i) for i in now]
 	soglia = [int(i) for i in soglia]
-	if 2<now[1]<10:
+	if 2<now[1]<10 and now[0]>soglia[0]:
 		Last_update = datetime.fromtimestamp(time()).strftime("%H:%M:%S")
 		return True
 	return False
@@ -69,7 +69,7 @@ def get_data(asset):
 	"""
 	data0 = download("ETH-EUR", start=datetime.now()-timedelta(hours=500), end=datetime.now(), interval="1h", auto_adjust=False, prepost=False).astype(float).sort_index()
 
-	return [data0]
+	return [data0.iloc[:-1]]
 
 def avg(v):
 	return sum(v)/len(v)

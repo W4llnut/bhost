@@ -4,7 +4,7 @@ from discord.ext import commands
 import asyncio
 from yfinance import download
 from requests import get
-from time import time
+from time import time, sleep
 from pandas import DataFrame, to_datetime, concat
 from datetime import datetime
 from math import floor
@@ -38,7 +38,7 @@ def check_time():
 	soglia = Last_update.split(":")
 	now = [int(i) for i in now]
 	soglia = [int(i) for i in soglia]
-	if 5<now[1]<10 and now[0]>soglia[0]:
+	if 2<now[1]<10 and now[0]>=(soglia[0]+1)%24:
 		Last_update = datetime.fromtimestamp(time()).strftime("%H:%M:%S")
 		return True
 	return False
@@ -67,8 +67,14 @@ def get_data(asset):
 		ohlc = concat([ohlc, data0]).drop_duplicates(keep='first')
 		ohlc = ohlc.sort_index()
 	"""
-	data0 = download("ETH-EUR", start=datetime.now()-timedelta(hours=500), end=datetime.now(), interval="1h", auto_adjust=False, prepost=False).astype(float).sort_index()
-
+	i = 0
+	while i<20:
+		data0 = download("ETH-EUR", start=datetime.now()-timedelta(hours=500), end=datetime.now(), interval="1h", auto_adjust=False, prepost=False).astype(float).sort_index()
+		if data0.iloc[-1]['Open']!=data0.iloc[-1]['Close']:
+			break
+		sleep(30)
+		i += 1
+	print(i)
 	return [data0.iloc[:-1]]
 
 def avg(v):

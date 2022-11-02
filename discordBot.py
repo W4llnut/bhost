@@ -70,7 +70,7 @@ def get_data(asset):
 	i = 0
 	while i<20:
 		data0 = download("ETH-EUR", start=datetime.now()-timedelta(hours=500), end=datetime.now(), interval="1h", auto_adjust=False, prepost=False).astype(float).sort_index()
-		if data0.iloc[-1]['Open']!=data0.iloc[-1]['Close']:
+		if data0.iloc[-2]['Open']!=data0.iloc[-2]['Close']:
 			break
 		sleep(30)
 		i += 1

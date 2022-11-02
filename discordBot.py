@@ -38,7 +38,7 @@ def check_time():
 	soglia = Last_update.split(":")
 	now = [int(i) for i in now]
 	soglia = [int(i) for i in soglia]
-	if 2<now[1]<10 and now[0]>soglia[0]:
+	if 5<now[1]<10 and now[0]>soglia[0]:
 		Last_update = datetime.fromtimestamp(time()).strftime("%H:%M:%S")
 		return True
 	return False

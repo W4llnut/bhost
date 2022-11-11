@@ -49,25 +49,19 @@ class AlgorithmETH:
 
 	# ========================= funzioni dell'algoritmo ========================= #
 	def check_buy(self, t):
-		state1,calls1 = self.ai.eval1(self.df,t)
-		state2,calls2 = self.ai.eval2(self.df,t)
-		if state1:
+		self.strategia,calls = self.ai.eval(self.df,t)
+		if self.strategia != "-":
 			self.stopWinMACD = calls1[0]
 			self.stopLossMACD = calls1[1]
-			self.strategia = "MACD"
-		elif state2:
-			self.stopWinMACD = calls2[0]
-			self.stopLossMACD = calls2[1]
-			self.strategia = "bollinger"
 		return self.strategia != "-"
 
 	def check_sell(self, t, entrata):
 		if self.strategia == "MACD":
 			#if self.df[f'EMA{self.Breve}'][t]<self.df[f'EMA{self.Lunga}'][t] or self.stopCallMacd(t,entrata):
-			if self.ai.stopCall1(self.df,t,entrata*(1+self.tassa)) or self.stopCallMacd(t,entrata):
+			if self.stopCallMacd(t,entrata):
 				self.strategia = "-"
 		elif self.strategia == "bollinger":
-			if self.ai.stopCall2(self.df,t,entrata*(1+self.tassa)) or self.stopCallBollinger(t,entrata):
+			if self.stopCallMacd(t,entrata):
 				self.strategia = "-"
 		return self.strategia == "-"
 
@@ -86,6 +80,10 @@ class AlgorithmETH:
 	def analyzeDf(self):
 		# EMA
 		self.df[f'EMA{100}'] = ema_indicator(self.df['Close'],100,False)
+		rocEMA100 = ROCIndicator(self.df['EMA100'])
+		self.df['rocEMA100'] = rocEMA100.roc()
+		
+		self.df['distance'] = (self.df['Close']-self.df['EMA100'])/self.df['EMA100']
 		macd = MACD(self.df['Close'])
 		self.df['macd_diff'] = macd.macd_diff()
 

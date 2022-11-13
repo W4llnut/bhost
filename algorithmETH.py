@@ -51,8 +51,8 @@ class AlgorithmETH:
 	def check_buy(self, t):
 		self.strategia,calls = self.ai.eval(self.df,t)
 		if self.strategia != "-":
-			self.stopWinMACD = calls1[0]
-			self.stopLossMACD = calls1[1]
+			self.stopWinMACD = calls[0]
+			self.stopLossMACD = calls[1]
 		return self.strategia != "-"
 
 	def check_sell(self, t, entrata):

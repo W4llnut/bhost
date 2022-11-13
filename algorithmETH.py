@@ -63,6 +63,8 @@ class AlgorithmETH:
 		elif self.strategia == "bollinger":
 			if self.stopCallMacd(t,entrata):
 				self.strategia = "-"
+		elif self.strategia == "random":
+			self.strategia = "-"
 		return self.strategia == "-"
 
 	def stopCallMacd(self, t, entrata):

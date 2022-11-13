@@ -77,7 +77,7 @@ class AGENT:
 			if costo!=0 or True:
 				self.dentro = True
 			self.get_balance()
-			return [True,f"Bought: {self.get_price()}"]
+			return [True,f"Bought: {self.get_price()} [{self.A[0].strategia}]"]
 			return [True,f"Buy: Crypto:{self.stocks} {self.currentName[self.current]}({costo}*{self.moltiplicatore}={costo*self.moltiplicatore}$) / Balance:{self.money}$ || {output}"]
 
 		elif forced:

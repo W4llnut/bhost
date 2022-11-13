@@ -1,10 +1,9 @@
-#aaaaaa
 import discord
 from discord.ext import commands
 import asyncio
 from yfinance import download
 from requests import get
-from time import time, sleep
+from time import time
 from pandas import DataFrame, to_datetime, concat
 from datetime import datetime
 from math import floor
@@ -67,14 +66,8 @@ def get_data(asset):
 		ohlc = concat([ohlc, data0]).drop_duplicates(keep='first')
 		ohlc = ohlc.sort_index()
 	"""
-	i = 0
-	while i<20:
-		data0 = download("ETH-EUR", start=datetime.now()-timedelta(hours=500), end=datetime.now(), interval="1h", auto_adjust=False, prepost=False).astype(float).sort_index()
-		if data0.iloc[-2]['Open']!=data0.iloc[-2]['Close']:
-			break
-		sleep(30)
-		i += 1
-	print(i)
+	data0 = download("ETH-EUR", start=datetime.now()-timedelta(hours=500), end=datetime.now(), interval="1h", auto_adjust=False, prepost=False).astype(float).sort_index()
+
 	return [data0.iloc[:-1]]
 
 def avg(v):

@@ -23,22 +23,20 @@ class AGENT:
 		self.client = Spot(key=self.api_key, secret=self.api_sec)
 
 		# parametri
-		self.tassa = 0.0
+		self.tassa = 0.002
 		self.moltiplicatore = 1
 		self.invest = 1 # 100%
 
 		# algoritmi
 		self.ETH = AlgorithmETH(self.tassa,self.moltiplicatore)
-		self.A = [self.ETH]
+		self.A = self.ETH
 
 		# Parametri della simulazione
 		self.staticMoney = 10
 		self.staticETH = 0.0003
 
 		self.strategia = "-"
-		self.current = -1
-		self.currentName = ["ETH"]
-		self.currentNameResult = ["ETH"]
+		self.currentName = "ETH"
 
 		self.money = 0
 		self.stocks = 0
@@ -50,20 +48,17 @@ class AGENT:
 		self.shorting = False
 
 	# ========================= funzioni di gestione ========================= #
-	def buy(self, now, data, forced=False, which=-1, short=False):
-		self.A[0].df = data[0].astype(float)
-		self.A[0].analyzeDf()
-		if (not self.dentro and self.A[0].check_buy(-1) == True):
-			self.current = 0
+	def buy(self, now, data, forced=False, short=False):
+		self.A.df = data.astype(float)
+		self.A.analyzeDf()
+		if not self.dentro and self.A.check_enter(-1) == True:
 			self.ora = int((time()-60)*1000)
 			self.get_balance()
 			spesa = self.invest*self.money
 
-			if "short" not in self.A[0].strategia and False: # <-
-				output = self.buy_order(0)
-			elif "short" in self.A[0].strategia and False: # <-
+			if "short" in self.A.strategia and False: # <- to activate
 				self.shorting = True
-				output = self.sell_order(0)
+			output = self.enter_order()
 
 			k = 0
 			while k<8:
@@ -77,19 +72,15 @@ class AGENT:
 			if costo!=0 or True:
 				self.dentro = True
 			self.get_balance()
-			return [True,f"Bought: {self.get_price()} [{self.A[0].strategia}]"]
-			return [True,f"Buy: Crypto:{self.stocks} {self.currentName[self.current]}({costo}*{self.moltiplicatore}={costo*self.moltiplicatore}$) / Balance:{self.money}$ || {output}"]
+			return [True,f"Enter: {self.get_price()} [{self.A.strategia}]"]
+			return [True,f"[{self.A.strategia}] Enter: Crypto:{self.stocks} {self.currentName}({costo}*{self.moltiplicatore}={costo*self.moltiplicatore}$) / Balance:{self.money}$ || {output}"]
 
 		elif forced:
-			self.current = which
-			self.ora = int((time()-60)*1000)
 			self.get_balance()
 			spesa = self.invest*self.money
-			if short==False:
-				output = self.buy_order(0)
-			elif short==True:
+			if short==True:
 				self.shorting = True
-				output = self.sell_order(0)
+			output = self.enter_order()
 
 			print(output)
 			k = 0
@@ -104,43 +95,41 @@ class AGENT:
 			if costo!=0:
 				self.dentro = True
 			self.get_balance()
-			return [True,f"Buy: Crypto:{self.stocks} {self.currentName[self.current]}({costo}*{self.moltiplicatore}={costo*self.moltiplicatore}$) / Balance:{self.money}$ || {output}"]
+			return [True,f"[{self.A.strategia}] Enter: Crypto:{self.stocks} {self.currentName}({costo}*{self.moltiplicatore}={costo*self.moltiplicatore}$) / Balance:{self.money}$ || {output}"]
 		return [False,""]
 
 	def sell(self, now, data, forced=False):
-		self.A[0].df = data[0].astype(float)
-		self.A[0].analyzeDf()
-		if (self.dentro and self.A[self.current].check_sell(-1, self.entrata) == True) or forced:
+		self.A.df = data.astype(float)
+		self.A.analyzeDf()
+		if (self.dentro and self.A.check_exit(-1, self.entrata) == True) or forced:
 			self.dentro = False
-			if (self.shorting==True or "short" in self.A[0].strategia) and False: # <-
-				output = self.buy_order(0)
+			#output = self.exit_order() # <- to activate
+			if (self.shorting==True or "short" in self.strategia): # <- to activate
 				self.shorting = False
-			elif False: # <-
-				output = self.sell_order(0)
-
+			
 			sleep(10)
 			self.get_balance()
 
 			m = self.current
 			self.current = -1
-			return [True,f"Sold: {self.get_price()}"]
-			return [True,f"Sell: Crypto:{self.stocks} {self.currentName[m]} / Balance:{round(self.money,2)}$ || {output}"]
+			return [True,f"Exit: {self.get_price()}"]
+			return [True,f"Exit: Crypto:{self.stocks} {self.currentName} / Balance:{round(self.money,2)}$ || {output}"]
 		return [False,""]
 
 	def get_total_balance(self):
 		self.get_balance()
-		return f"Balance: {self.money}$+({self.staticMoney}$) / Crypto: {self.stocks}{self.currentName[self.current]}({self.get_price()*self.stocks}$)({self.get_price()}ETH/$) / Total(ETH+BUSD): {self.money+self.get_price()*self.stocks}$ /Homecash: {self.euro}€"
+		return f"Balance: {self.money}$+({self.staticMoney}$) / Crypto: {self.stocks}{self.currentName}({self.get_price()*self.stocks}$)({self.get_price()}ETH/$) / Total(ETH+BUSD): {self.money+self.get_price()*self.stocks}$ /Homecash: {self.euro}€"
 
 
 	def get_current_state(self, data):
-		self.A[0].df = data[0].astype(float)
-		self.A[0].analyzeDf()
-		return f"EMAl={round(self.A[0].df[f'EMA100'].iloc[-1],2)}"
+		self.A.df = data.astype(float)
+		self.A.analyzeDf()
+		return self.A.get_current_state()
 
 
 	# ========================= funzioni di richiesta ========================= #	
 	def get_price(self):
-		return float(requests.get(f'https://api.binance.com/api/v3/ticker/price?symbol={self.currentName[0]}EUR').json()["price"])
+		return float(requests.get(f'https://api.binance.com/api/v3/ticker/price?symbol={self.currentName}EUR').json()["price"])
 
 	def get_balance(self):
 		params = {
@@ -154,7 +143,7 @@ class AGENT:
 				stocks = float(i["free"])-self.staticETH
 			if i["asset"] == "BUSD":
 				money = float(i["free"])-self.staticMoney
-			if i["asset"] == "EUR":
+			if i["asset"] == self.currentName:
 				self.euro = float(i["free"])
 		self.money = money
 		self.stocks = stocks
@@ -181,17 +170,17 @@ class AGENT:
 		flag,costo,tassa,price,volume = self.get_trade_history(self.ora)
 		return volume
 
-	def buy_order(self, asset):
+	def enter_order(self,asset):
 		return
-		print(f"{self.currentNameResult[asset]}EUR")
+		print(f"{self.currentNameResult}EUR")
 		self.get_balance()
 
-		if self.shorting==True or "short" in self.A[0].strategia:
+		if self.shorting==True or "short" in self.A.strategia:
 			params = {
 				'symbol': 'ETHBUSD',
-				'side': 'BUY',
+				'side': 'SELL',
 				'type': 'MARKET',
-				'quoteOrderQty': round(self.money/2,2),
+				'quantity': round(self.stocks,5), # <- sus, devo mettere i money in ETH?
 				'recvWindow': 60000
 			}
 		else:
@@ -204,18 +193,19 @@ class AGENT:
 			}
 
 		v = self.client.new_order(**params)
+		# add stopcalls
 		return v
 
-	def sell_order(self, asset):
+	def exit_order(self, asset):
 		return
-		print(f"{self.currentNameResult[asset]}EUR")
+		print(f"{self.currentNameResult}EUR")
 		self.get_balance()
-		if self.shorting==True or "short" in self.A[0].strategia:
+		if self.shorting==True or "short" in self.A.strategia:
 			params = {
 				'symbol': 'ETHBUSD',
-				'side': 'SELL',
+				'side': 'BUY',
 				'type': 'MARKET',
-				'quantity': round(self.stocks,5),
+				'quoteOrderQty': round(self.money/2,2), # <- sus, devo mettere stocks in $?
 				'recvWindow': 60000
 			}
 		else:
